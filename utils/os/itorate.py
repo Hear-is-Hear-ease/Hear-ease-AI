@@ -28,9 +28,8 @@ def __file_itorator(path: str,
 
             yield [parent_path, file]
 
+
 # Itorate files with including and excluding files from path
-
-
 def file_itorator(path: str,
                   include: Optional[Union[str, list[str]]] = None,
                   exclude: Optional[Union[str, list[str]]] = None):
