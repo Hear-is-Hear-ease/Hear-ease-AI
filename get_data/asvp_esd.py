@@ -74,12 +74,12 @@ https://github.com/HLTSingapore/Emotional-Speech-Data
 """
 
 # Load packages
+from utils.os import *
+from constant.os import *
 import os
 import numpy as np
 import pandas as pd
 
-from constant.os import *
-from utils.os import *
 
 origin_file_path = '/Users/jaewone/Downloads/ASVP-ESD-Update/Bonus'
 

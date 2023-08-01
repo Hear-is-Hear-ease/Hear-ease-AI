@@ -41,12 +41,12 @@
 """
 
 # Load packages
+from utils.os import *
+from constant.os import *
 import os
 import numpy as np
 import pandas as pd
 
-from constant.os import *
-from utils.os import *
 
 origin_file_path = "/Users/jaewone/Downloads/donateacry_corpus_cleaned_and_updated_data"
 label_list = ['belly_pain', 'discomfort', 'burping', 'tired', 'hungry']
