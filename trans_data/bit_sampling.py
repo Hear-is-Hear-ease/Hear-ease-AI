@@ -1,32 +1,25 @@
-import wave
-import pandas as pd
-import numpy as np
-from scipy.io import wavfile
-from scipy.signal import resample, resample_poly
-import soundfile as sf
-import os
-import librosa
-
 from constant.os import *
+from utils.os import *
+from utils.sound import *
 
-
-def get_wav_info(file_path):
-    # Read the input WAV file
-    with wave.open(file_path, 'rb') as wav_in:
-        sample_rate = wav_in.getframerate()
-        num_channels = wav_in.getnchannels()
-        sample_width = wav_in.getsampwidth()
-        num_frames = wav_in.getnframes()
-        audio_data = wav_in.readframes(num_frames)
-
-        print(f'sample_rate: {sample_rate}')   # 16000
-        print(f'num_channels: {num_channels}')  # 1
-        print(f'sample_width: {sample_width}')  # 2
-        print(f'num_frames: {num_frames}')     # 239630
-        # print(f'audio_data: {audio_data}')   # a7\xed\xa6\xe2\x95\ ...
+import os
+from typing import Optional
+import sox
+import wave
+import numpy as np
 
 
 def get_sample_rate(file_path: str):
+    """
+    wav 파일의 sample rate를 추출
+
+    Parameters:
+        file_path: sample rate를 확인 할 파일의 경로
+
+    Returns:
+        파일의 sample rate를 반환한다.
+        PCM과 같은 이유로 분석할 수 없는 파일은 na를 반환한다.
+    """
     try:
         with wave.open(file_path, 'rb') as wav_in:
             sample_rate = wav_in.getframerate()
@@ -35,68 +28,89 @@ def get_sample_rate(file_path: str):
         return np.nan
 
 
-def bit_sampling(files, output_folder, target_sample_rate):
-    for input_path in files:
-        file = input_path.rsplit('/', 1)[1]
-        output_path = os.path.join(output_folder, file)
+def resampling(file_path_list: list[str], output_path: Optional[str] = None, target_sample_rate: int = 16000):
+    """
+    Change sample rate
 
-        # Read the input WAV file
-        with wave.open(input_path, 'rb') as wav_in:
-            sample_rate = wav_in.getframerate()
-            num_channels = wav_in.getnchannels()
-            sample_width = wav_in.getsampwidth()
-            num_frames = wav_in.getnframes()
-            audio_data = wav_in.readframes(num_frames)
+    Before start:
+        sox를 설치하여야 아래 함수를 수행할 수 있다.
+        OS X: brew install sox
+        linux: apt-get install sox
+        windows: exe 파일을 다운받아 실행: https://sourceforge.net/projects/sox/files/sox/14.4.1/
 
-        # Convert 2-byte audio data to a 1D numpy array with dtype 'int16'
-        audio_data = np.frombuffer(audio_data, dtype='int16')
+    Parameters:
+        file_path_list: 변환하고자 하는 wav 파일 리스트
+        output_path: 변환된 결과물을 저장하고자 하는 폴더 경로. 없을 경우 변환된 파일로 기존 파일을 대치한다.
+        target_sample_rate: 변환하고자 하는 sample rate
 
-        # Check if the sample rate matches the target rate
-        if sample_rate != target_sample_rate:
-            # Resample the audio data to the target sample rate
-            # resampled_data = resample(audio_data, int(
-            #     len(audio_data) * target_sample_rate / sample_rate))
+    Returns: None
+    """
 
-            num_samples_resampled = int(
-                len(audio_data) * target_sample_rate / sample_rate)
-            resampled_data = resample_poly(
-                audio_data, num_samples_resampled, len(audio_data))
-            # Convert back to 2-byte audio data
-            resampled_data = resampled_data.astype('int16')
+    __output_path = output_path
+    if __output_path == None:
+        __output_path = os.path.join(
+            main_path, 'baby-cry-classification-resampling-temp-folder')
+        if os.path.exists(__output_path):
+            remove_path_with_files(__output_path)
+        os.mkdir(__output_path)
+    else:
+        if not os.path.exists(__output_path):
+            raise OSError(f'Output path {__output_path} not exist')
 
-            # Write the resampled data to the output WAV file
-            with wave.open(output_path, 'wb') as wav_out:
-                wav_out.setnchannels(num_channels)
-                wav_out.setsampwidth(sample_width)
-                wav_out.setframerate(target_sample_rate)
-                wav_out.writeframes(resampled_data)
+    tfm = sox.Transformer()
+    tfm.convert(samplerate=target_sample_rate)
 
-        else:
-            # If the sample rate already matches, simply copy the file to the output folder
-            with open(output_path, 'wb') as wav_out:
-                wav_out.write(audio_data)
+    for file_path in file_path_list:
+        if not os.path.exists(file_path):
+            raise OSError(f'File {file_path} not exist')
 
+        file = file_path.rsplit('/', 1)[1]
+        output_file_path = os.path.join(__output_path, file)
 
-def down_sampling(files, output_folder, target_sample_rate):
-    for input_path in files:
-        file = input_path.rsplit('/', 1)[1]
-        output_path = os.path.join(output_folder, file)
+        tfm.build(file_path, output_file_path)
 
-        data, samplerate = sf.read(input_path)
-        sf.write(output_path, data, target_sample_rate, subtype='PCM_16')
+        if output_path == None:
+            remove_file(file_path)
+            move_file(output_file_path, file_path)
+
+    if output_path == None:
+        remove_path_with_files(__output_path)
 
 
-def can_not_resampling_file():
-    target = '/Users/jaewone/developer/tensorflow/baby-cry-classification/sample/laugh_1.m4a_68.wav'
-    destinationPath = '/Users/jaewone/developer/tensorflow/baby-cry-classification/sample/aa.wav'
+def is_same_sample_rate(file_path_list: list[str], target_sample_rate: int):
+    """
+    파일 리스트의 sample rate가 target_sample_rate와 동일한지 확인한다.
 
-    buf = None
+    Parameters:
+        file_path_list: 확인하고자 하는 파일의 경로가 담긴 리스트
+        target_sample_rate: 확인하고자 하는 sample rate 값.
 
-    with open(target, 'rb') as tf:
-        buf = tf.read()
-        buf = buf+b'0' if len(buf) % 2 else buf
+    Returns:
+        모든 파일의 sample rate가 target_sample_rate와 일치할 경우 True를
+        그렇지 않을 경우 False를 반환한다.
+    """
+    sample_rate_set = list(set([get_sample_rate(file_path)
+                           for file_path in file_path_list]))
 
-    pcm_data = np.frombuffer(buf, dtype='int16')
-    wav_data = librosa.util.buf_to_float(x=pcm_data, n_bytes=2)
-    sf.write(destinationPath, wav_data, 16000, format='WAV',
-             endian='LITTLE', subtype='PCM_16')
+    if len(sample_rate_set) == 1 and sample_rate_set[0] == target_sample_rate:
+        return True
+    return False
+
+
+if __name__ == '__main__':
+    import sys
+    sys.path.append(
+        '/Users/jaewone/developer/tensorflow/baby-cry-classification')
+
+    file_list = []
+    filee_folder = ''
+
+    resampling(
+        file_path_list=[os.path.join(filee_folder, file)
+                        for file in file_list],
+        # output_path = os.path.join(main_path, 'test2'),
+        target_sample_rate=16000
+    )
+
+    if is_same_sample_rate([os.path.join(filee_folder, file) for file in file_list], 16000):
+        print(f'존재하는 sample rate는 16000 뿐이다.')

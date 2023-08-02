@@ -1,5 +1,6 @@
 import os
 from typing import Union, Optional
+from shutil import rmtree
 
 from utils.os.itorate import file_itorator
 
@@ -16,3 +17,20 @@ def remove_files(path: str,
                  exclude: Optional[Union[str, list[str]]] = None):
     for path, file in file_itorator(path, include, exclude):
         os.remove(os.path.join(path, file))
+
+
+def __remove_path_with_files(path: str):
+    for item in os.listdir(path):
+        if os.path.isdir(item):
+            folder = os.path.join(path, item)
+            __remove_path_with_files()
+            os.rmdir(folder)
+        else:
+            os.remove(os.path.join(path, item))
+
+
+# remove path with contained files
+def remove_path_with_files(path: str):
+    if os.path.exists(path):
+        __remove_path_with_files(path)
+    os.rmdir(path)
