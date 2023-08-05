@@ -33,14 +33,20 @@ def resampling(file_path_list: list[str], output_path: Optional[str] = None, tar
     Change sample rate
 
     Before start:
+
         sox를 설치하여야 아래 함수를 수행할 수 있다.
+
         OS X: brew install sox
+
         linux: apt-get install sox
+
         windows: exe 파일을 다운받아 실행: https://sourceforge.net/projects/sox/files/sox/14.4.1/
 
     Parameters:
         file_path_list: 변환하고자 하는 wav 파일 리스트
+
         output_path: 변환된 결과물을 저장하고자 하는 폴더 경로. 없을 경우 변환된 파일로 기존 파일을 대치한다.
+
         target_sample_rate: 변환하고자 하는 sample rate
 
     Returns: None
