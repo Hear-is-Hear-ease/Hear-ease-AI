@@ -2,7 +2,9 @@
 
 본 폴더는 sampling rate 통일, 음성 길이 통일과 같이 음성 데이터를 직간접적으로 변형하는 내용을 담고 있다. 각각의 파일에 대한 설명은 아래와 같다.
 
-### create_state_folder.py
+<br>
+
+#### create_state_folder.py
 
 원천 데이터를 처리하여 가용한 데이터로 변환한다. 처리 내용은 아래와 같다.
 
@@ -16,6 +18,6 @@
 
 <br>
 
-### bit_sampling.py
+#### bit_sampling.py
 
 음성의 sampling rate를 통일하는 resampling 함수와 파일 리스트가 모두 동일한 sampling rate를 가지는지 확인하는 is_same_sample_rate 함수를 제공한다.
