@@ -21,3 +21,9 @@
 #### bit_sampling.py
 
 음성의 sampling rate를 통일하는 resampling 함수와 파일 리스트가 모두 동일한 sampling rate를 가지는지 확인하는 is_same_sample_rate 함수를 제공한다.
+
+<br>
+
+### rename_by_state.py
+
+state 이름을 통해 파일명을 hungry_1.wav, hungry_2.wav와 같이 변경한다.
