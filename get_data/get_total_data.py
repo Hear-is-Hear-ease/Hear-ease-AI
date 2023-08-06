@@ -25,15 +25,16 @@ def get_total_data():
         df.to_csv(csv_path)
 
     # get data
-    # get_asvp_esd_data(
-    #     '/Users/jaewone/Downloads/ASVP-ESD-Update/Bonus', data_path, csv_path)
-    # get_donateacry_corpus_data(
-    #     "/Users/jaewone/Downloads/donateacry_corpus_cleaned_and_updated_data", data_path, csv_path)
-    # get_giulbia_data(
-    #     "/Users/jaewone/Downloads/baby_cry_detection-master/data/903 - Baby laugh", data_path, csv_path)
-    # get_iFLYTEK_data("/Users/jaewone/Downloads/dddd/train", data_path, csv_path)
-    # get_wojiaoguodekai_data(
-    #     "/Users/jaewone/Downloads/DatasetId_205704_1663556775", data_path, csv_path)
+    get_asvp_esd_data(
+        '/Users/jaewone/Downloads/ASVP-ESD-Update/Bonus', data_path, csv_path)
+    get_donateacry_corpus_data(
+        "/Users/jaewone/Downloads/donateacry_corpus_cleaned_and_updated_data", data_path, csv_path)
+    get_giulbia_data(
+        "/Users/jaewone/Downloads/baby_cry_detection-master/data/903 - Baby laugh", data_path, csv_path)
+    get_iFLYTEK_data("/Users/jaewone/Downloads/dddd/train",
+                     data_path, csv_path)
+    get_wojiaoguodekai_data(
+        "/Users/jaewone/Downloads/DatasetId_205704_1663556775", data_path, csv_path)
 
     # add duartion column
     df['duration'] = df['file'].apply(
