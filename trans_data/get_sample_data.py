@@ -54,12 +54,12 @@ def get_state_samples(data_path: str,
 
 
 # 각각의 state에서 n개의 무작위 파일을 추출한다.
-def extract_data_sample(data_path: str,
-                        output_dir: str,
-                        n_extract: int = 100,
-                        rand_seed: int = 123,
-                        state_list: Optional[list[str]] = None,
-                        with_dir: bool = True):
+def extract_state_sample(data_path: str,
+                         output_dir: str,
+                         n_extract: int = 100,
+                         rand_seed: int = 123,
+                         state_list: Optional[list[str]] = None,
+                         with_dir: bool = True):
     """
     각각의 state에서 n개의 무작위 파일을 추출한다.
 
