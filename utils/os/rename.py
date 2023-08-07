@@ -25,6 +25,7 @@ def rename_by_keyword(file_list: list[str], keyword: str):
 
     Returns: None
     """
+
     # 중복된 파일명이 존재할 경우 os.rename 함수는 두 항목 모두 삭제한다.
     # 이에 uuid4를 이용하여 임의의 이름으로 변경하여 중복을 방지한 다음 rename을 수행한다.
 
