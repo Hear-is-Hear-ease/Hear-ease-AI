@@ -9,6 +9,8 @@ from utils.os.itorate import file_itorator
 def copy_file(src: str, dst: str):
     if os.path.isfile(src):
         copyfile(src, dst)
+    else:
+        raise OSError(f'{src} is not a file')
 
 
 # copy all files in path

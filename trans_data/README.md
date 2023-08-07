@@ -4,7 +4,7 @@
 
 <br>
 
-#### create_state_folder.py
+### create_state_folder.py
 
 원천 데이터를 처리하여 가용한 데이터로 변환한다. 처리 내용은 아래와 같다.
 
@@ -18,7 +18,7 @@
 
 <br>
 
-#### bit_sampling.py
+### bit_sampling.py
 
 음성의 sampling rate를 통일하는 resampling 함수와 파일 리스트가 모두 동일한 sampling rate를 가지는지 확인하는 is_same_sample_rate 함수를 제공한다.
 
@@ -27,3 +27,15 @@
 ### rename_by_state.py
 
 state 이름을 통해 파일명을 hungry_1.wav, hungry_2.wav와 같이 변경한다.
+
+<br>
+
+### get_sample_data.py
+
+라벨에 따라 균등하게 맞추어 n개의 샘플을 추출한다.
+
+<br>
+
+### split_audio.py
+
+오디오를 지정된 시간만큼 자른다.
