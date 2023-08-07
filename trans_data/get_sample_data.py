@@ -7,6 +7,7 @@ from random import sample, seed, choices
 
 from utils.os import *
 from constant.os import *
+from trans_data.get_state_list import get_state_list_from_dir_name
 
 
 # 각각의 state에서 n개의 무작위 파일을 선택하여 경로를 반환한다.
@@ -59,7 +60,7 @@ def extract_state_sample(data_path: str,
                          n_extract: int = 100,
                          rand_seed: int = 123,
                          state_list: Optional[list[str]] = None,
-                         with_dir: bool = True):
+                         with_dir: bool = True) -> list[str]:
     """
     각각의 state에서 n개의 무작위 파일을 추출한다.
 
@@ -77,7 +78,7 @@ def extract_state_sample(data_path: str,
 
         * with_dir=True : False일 경우 output_path에 state에 따른 폴더 구분 없이 데이터를 추출한다.
 
-    Returns: 랜덤 추출한 파일의 경로 리스트
+    Returns: 랜덤 추출하여 저장된 파일의 경로 리스트
     """
 
     # Check output_dir exist.
@@ -105,12 +106,19 @@ def extract_state_sample(data_path: str,
         data_path, state_list, n_extract, rand_seed)
 
     # Copy files with sample data list
+    output_file_list = []
     for file in sample_data_list:
         if with_dir:
             _, dir, filename = file.rsplit('/', 2)
-            copy_file(file, os.path.join(output_dir, dir, filename))
+            output_file = os.path.join(output_dir, dir, filename)
+            output_file_list.append(output_file)
+            copy_file(file, output_file)
         else:
-            copy_file(file, os.path.join(output_dir, file.rsplit('/', 1)[1]))
+            output_file = os.path.join(output_dir, file.rsplit('/', 1)[1])
+            output_file_list.append(output_file)
+            copy_file(file, output_file)
+
+    return output_file_list
 
 
 # 지정된 경로에서 n개의 무작위 파일을 선택하여 경로를 반환한다.
@@ -152,7 +160,7 @@ def extract_data_sample(data_path: str,
                         output_dir: str,
                         n_extract: int = 100,
                         rand_seed: int = 123,
-                        replace: bool = False):
+                        replace: bool = False) -> list[str]:
     """
     지정된 경로에서 n개의 무작위 파일을 추출한다.
 
@@ -168,7 +176,7 @@ def extract_data_sample(data_path: str,
 
         * replace : True일 경우 복원추출을 수행한다.
 
-    Returns: 랜덤 추출한 파일의 경로 리스트
+    Returns: 랜덤 추출하여 저장된 파일의 경로 리스트
     """
 
     # Check output_dir exist.
@@ -182,8 +190,13 @@ def extract_data_sample(data_path: str,
         data_path, n_extract, rand_seed, replace)
 
     # Copy files with sample data list
+    output_file_list = []
     for file in sample_data_list:
-        copy_file(file, os.path.join(output_dir, file.rsplit('/', 1)[1]))
+        output_file = os.path.join(output_dir, file.rsplit('/', 1)[1])
+        output_file_list.append(output_file)
+        copy_file(file, output_file)
+
+    return output_file_list
 
 
 if __name__ == '__main__':

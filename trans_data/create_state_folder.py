@@ -1,5 +1,3 @@
-from bit_sampling import resampling, is_same_sample_rate
-from trans_data import get_sample_rate
 import sys
 import os
 import numpy as np
@@ -8,7 +6,46 @@ import pandas as pd
 from utils.os import *
 from utils.sound import *
 from constant.os import *
+from trans_data.bit_sampling import *
+from trans_data.get_state_list import get_state_list_from_dir_name
 sys.path.append('/Users/jaewone/developer/tensorflow/baby-cry-classification')
+
+
+def create_empty_state_folder(path: str, state_list=None) -> list[str]:
+    """
+    folder_path 경로에 state_list 안에 있는 state 폴더들을 생성한다.
+
+    Parameters:
+        * path: 폴더를 생성하고자 하는 경로. 경로가 존재하지 않을 경우 생성하며 존재할 경우 에러를 발생시킨다.
+        * state_list: 폴더를 생성하고자 하는 state 리스트. 없을 경우 스스로 가져온다.
+
+    Returns:
+        * 생성된 state들에 따른 경로를 반환한다.
+    """
+
+    if os.path.exists(path):
+        raise OSError(f'path {path} already exist.')
+    else:
+        os.makedirs(path)
+
+    if state_list == None:
+        state_list = get_state_list_from_dir_name(data_path)
+    else:
+        for state in state_list:
+            if not os.path.exists(os.path.join(data_path, state)):
+                raise OSError(
+                    f"The path corresponding to state '{state}' does not exist.")
+
+    if state_list == None or len(state_list) == 0:
+        raise Exception(f'Can not get state list from data path {data_path}')
+
+    state_path_list = []
+    for state in state_list:
+        state_path = os.path.join(path, state)
+        state_path_list.append(state_path)
+        os.makedirs(state_path)
+
+    return state_path_list
 
 
 def create_state_folder():

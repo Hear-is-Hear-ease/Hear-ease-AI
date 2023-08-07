@@ -47,3 +47,10 @@ state 이름을 통해 파일명을 hungry_1.wav, hungry_2.wav와 같이 변경�
 ### get_state_list.py
 
 폴더의 이름으로부터 state 이름을 가져온다.
+
+<br>
+
+### trim_white_noise.py
+
+오디오의 앞뒤에 존재하는 화이트 노이즈를 제거한다.
+화이트 노이즈는 음성의 전체 에너지의 하위 10%에 해당하는 시점으로 정의한다.
