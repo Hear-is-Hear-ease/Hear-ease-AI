@@ -13,11 +13,15 @@ import os
 import numpy as np
 import pandas as pd
 
-from constant.os import *
 from utils.os import *
 
 origin_file_path = "/Users/jaewone/Downloads/dddd/train"
 label_list = ['hug', 'diaper', 'hungry', 'sleepy', 'awake', 'uncomfortable']
+
+main_path = os.path.join(os.getcwd().rsplit(
+    'baby-cry-classification')[0], 'baby-cry-classification')
+data_path = os.path.join(main_path, 'data')
+csv_path = os.path.join(main_path, 'origin_data_info.csv')
 
 
 def get_df_from_data(origin_file_path: str):

@@ -18,10 +18,14 @@ import numpy as np
 import pandas as pd
 from json import load
 
-from constant.os import *
 from utils.os import *
 
 origin_file_path = "/Users/jaewone/Downloads/DatasetId_205704_1663556775"
+
+main_path = os.path.join(os.getcwd().rsplit(
+    'baby-cry-classification')[0], 'baby-cry-classification')
+data_path = os.path.join(main_path, 'data')
+csv_path = os.path.join(main_path, 'origin_data_info.csv')
 
 
 def get_df_from_data(origin_file_path: str):

@@ -1,11 +1,12 @@
+from trans_data.get_state_list import get_state_list_from_dir_name
+from utils.os import rename_by_keyword
 import os
 from typing import Optional
 
-# import sys
-# sys.path.append('/Users/jaewone/developer/tensorflow/baby-cry-classification')
-
-from utils.os import rename_by_keyword
-from trans_data.get_state_list import get_state_list_from_dir_name
+main_path = os.path.join(os.getcwd().rsplit(
+    'baby-cry-classification')[0], 'baby-cry-classification')
+data_path = os.path.join(main_path, 'data')
+csv_path = os.path.join(main_path, 'origin_data_info.csv')
 
 
 def rename_files_by_state(data_path: str,

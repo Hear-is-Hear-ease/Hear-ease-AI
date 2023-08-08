@@ -1,3 +1,4 @@
+from utils.os import remove_file
 import numpy as np
 import os
 import librosa
@@ -5,11 +6,10 @@ from scipy.io import wavfile
 from typing import Optional
 import wave
 
-# import sys
-# sys.path.append('/Users/jaewone/developer/tensorflow/baby-cry-classification')
-
-from constant.os import *
-from utils.os import remove_file
+main_path = os.path.join(os.getcwd().rsplit(
+    'baby-cry-classification')[0], 'baby-cry-classification')
+data_path = os.path.join(main_path, 'data')
+csv_path = os.path.join(main_path, 'origin_data_info.csv')
 
 
 def create_split_audio(file_path: str,

@@ -1,14 +1,15 @@
-# import sys
+from trans_data.get_state_list import get_state_list_from_dir_name
+from trans_data.bit_sampling import *
+from utils.sound import *
+from utils.os import *
 import os
 import numpy as np
 import pandas as pd
 
-from utils.os import *
-from utils.sound import *
-
-from trans_data.bit_sampling import *
-from trans_data.get_state_list import get_state_list_from_dir_name
-# sys.path.append('/Users/jaewone/developer/tensorflow/baby-cry-classification')
+main_path = os.path.join(os.getcwd().rsplit(
+    'baby-cry-classification')[0], 'baby-cry-classification')
+data_path = os.path.join(main_path, 'data')
+csv_path = os.path.join(main_path, 'origin_data_info.csv')
 
 
 def create_empty_state_folder(path: str, state_list=None) -> list[str]:
