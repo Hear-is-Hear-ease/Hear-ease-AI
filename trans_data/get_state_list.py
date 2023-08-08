@@ -1,4 +1,6 @@
 import os
+from typing import Optional, Union
+from utils.os import file_itorator
 
 
 def get_state_list_from_dir_name(data_path: str, with_path: bool = False, include_etc: bool = False) -> list[str]:
@@ -25,3 +27,40 @@ def get_state_list_from_dir_name(data_path: str, with_path: bool = False, includ
     if include_etc == False and os.path.exists(etc_path):
         state_list.remove(etc_path if with_path else 'etc')
     return state_list
+
+
+def get_state_file_list(data_path: str,
+                        state_list: Optional[list[str]] = None,
+                        include: Optional[Union[str, list[str]]] = None,
+                        exclude: Optional[Union[str, list[str]]] = None):
+    """
+    각각의 state에서 n개의 무작위 파일을 선택하여 경로를 반환한다.
+
+    Parameters:
+
+        * data_path : 파일의 경로
+
+        * state_list=None : state 리스트를 받을 경우 state_list가 포함하는 state 폴더의 파일들만 이름을 변경한다.
+
+    Returns: 파일의 경로 리스트
+    """
+    if not os.path.exists(data_path):
+        raise OSError(f'path {data_path} not exist.')
+
+    # Get state list if not exist
+    if state_list == None:
+        state_list = get_state_list_from_dir_name(data_path)
+    else:
+        for state in state_list:
+            if not os.path.exists(os.path.join(data_path, state)):
+                raise OSError(
+                    f"The path corresponding to state '{state}' does not exist.")
+
+    file_list = []
+    for state in state_list:
+        file_list.extend([os.path.join(path, file) for path, file in file_itorator(
+            os.path.join(data_path, state),
+            include, exclude
+        )])
+
+    return file_list

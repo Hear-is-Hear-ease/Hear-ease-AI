@@ -1,5 +1,6 @@
 from sklearn.metrics.pairwise import cosine_similarity
 from typing import Optional
+from tqdm import tqdm
 import librosa
 import numpy as np
 import os
@@ -38,18 +39,20 @@ def get_similarities(file_list: list[str], top_n: Optional[int] = None) -> list[
     # 코사인 유사도를 측정한다.
     n = len(file_list)
     similarity_matrix = np.zeros((n, n))
-    for i in range(n):
-        for j in range(n):
-            mels1 = melspectrograms[file_list[i]].flatten()
-            mels2 = melspectrograms[file_list[j]].flatten()
+    with tqdm(total=n, desc='Processing', position=0) as pbar:
+        for i in range(n):
+            for j in range(n):
+                mels1 = melspectrograms[file_list[i]].flatten()
+                mels2 = melspectrograms[file_list[j]].flatten()
 
-            # 두 멜 스펙트럼의 크기가 다를 경우 작은 크기에 맞춘다.
-            min_size = min(mels1.shape[0], mels2.shape[0])
-            mels1 = mels1[:min_size]
-            mels2 = mels2[:min_size]
+                # 두 멜 스펙트럼의 크기가 다를 경우 작은 크기에 맞춘다.
+                min_size = min(mels1.shape[0], mels2.shape[0])
+                mels1 = mels1[:min_size]
+                mels2 = mels2[:min_size]
 
-            similarity_matrix[i, j] = cosine_similarity(
-                mels1.reshape(1, -1), mels2.reshape(1, -1))
+                similarity_matrix[i, j] = cosine_similarity(
+                    mels1.reshape(1, -1), mels2.reshape(1, -1))
+            pbar.update(1)
 
     # 유사도 순으로 나열한다.
     np.fill_diagonal(similarity_matrix, 0)
