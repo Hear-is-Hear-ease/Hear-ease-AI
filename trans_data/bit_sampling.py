@@ -24,7 +24,7 @@ def get_sample_rate(file_path: str):
         with wave.open(file_path, 'rb') as wav_in:
             sample_rate = wav_in.getframerate()
             return sample_rate
-    except:
+    except Exception as err:
         return np.nan
 
 
@@ -95,8 +95,9 @@ def is_same_sample_rate(file_path_list: list[str], target_sample_rate: int):
         모든 파일의 sample rate가 target_sample_rate와 일치할 경우 True를
         그렇지 않을 경우 False를 반환한다.
     """
+
     sample_rate_set = list(set([get_sample_rate(file_path)
-                           for file_path in file_path_list]))
+                                for file_path in file_path_list]))
 
     if len(sample_rate_set) == 1 and sample_rate_set[0] == target_sample_rate:
         return True

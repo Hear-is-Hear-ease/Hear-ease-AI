@@ -4,10 +4,13 @@ from typing import Optional
 # import sys
 # sys.path.append('/Users/jaewone/developer/tensorflow/baby-cry-classification')
 
-from utils.os import rename_by_keyword, get_state_list_from_dir_name
+from utils.os import rename_by_keyword
+from trans_data.get_state_list import get_state_list_from_dir_name
 
 
-def rename_files_by_state(data_path: str, state_list: Optional[list[str]] = None, include_etc=False):
+def rename_files_by_state(data_path: str,
+                          state_list: Optional[list[str]] = None,
+                          include_etc=False) -> list[str]:
     """
     state에 따라 파일의 이름을 변경한다.
 
@@ -18,7 +21,7 @@ def rename_files_by_state(data_path: str, state_list: Optional[list[str]] = None
 
         include_etc=False : True일 경우 etc 폴더를 state에 포함한다.
 
-    Returns: None
+    Returns: 변환된 파일 경로 리스트
     """
 
     if not os.path.exists(data_path):
@@ -35,16 +38,19 @@ def rename_files_by_state(data_path: str, state_list: Optional[list[str]] = None
                     f"The path corresponding to state '{state}' does not exist.")
 
     # rename files
+    renamed_file_list = []
     for state in state_list:
         state_path = os.path.join(data_path, state)
         file_path_list = [os.path.join(state_path, file)
                           for file in os.listdir(state_path)]
-        rename_by_keyword(file_path_list, state)
+        renamed_file_list += rename_by_keyword(file_path_list, state)
+
+    return renamed_file_list
 
 
 if __name__ == '__main__':
     from constant.os import *
 
     data_path = data_path
-    rename_files_by_state(data_path)
-    print("Done")
+    renamed_file_list = rename_files_by_state(data_path)
+    print(renamed_file_list)

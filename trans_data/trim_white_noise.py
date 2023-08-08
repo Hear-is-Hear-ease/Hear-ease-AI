@@ -31,7 +31,7 @@ def detect_non_silence(audio_data: np.array, threshold: float, frame_size: int) 
     return start, end
 
 
-def trim_audio(file_path: str, output_path: Optional[str], inplace: bool = False):
+def trim_audio(file_path: str, output_path: Optional[str] = None, inplace: bool = False):
     """
     오디오의 앞뒤에 존재하는 화이트 노이즈를 제거한다.
     화이트 노이즈는 음성의 전체 에너지의 하위 10%에 해당하는 시점으로 정의한다.
