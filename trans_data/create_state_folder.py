@@ -48,14 +48,26 @@ def create_empty_state_folder(path: str, state_list=None) -> list[str]:
     return state_path_list
 
 
-def create_state_folder(main_path: str, csv_path: str):
+def create_state_folder(data_path: str, csv_path: str, output_path: Optional[str] = None):
+    """
+    원본 데이터와 정보가 담긴 csv 파일을 받아 state 이름의 폴더로 구분한다.
+
+    Parameters:
+        * data_path : 원본 데이터 경로
+        * csv_path  : 데이터에 대한 정보가 담긴 csv 파일
+        * output_path : output_path를 받을 경우 원본 데이터를 수정하는 것이 아닌 사본을 생성한다.
+
+    Returns: None
+    """
     # path set
-    origin_data_path = os.path.join(main_path, 'data')
-    temp_path = os.path.join(main_path, '_temp')
+    main_path = data_path.rsplit('/', 1)[0]
+    origin_data_path = data_path
+    temp_path = (output_path if output_path != None
+                 else os.path.join(main_path, '_temp'))
 
     # 작업할 폴더를 생성한다. 만약 _temp 라는 폴더가 존재한다면 에러가 발생된다.
     if os.path.exists(temp_path):
-        raise OSError(f'path {temp_path} already exists.')
+        raise OSError('path _temp already exists.')
     os.makedirs(temp_path)
 
     # Load csv
@@ -110,8 +122,9 @@ def create_state_folder(main_path: str, csv_path: str):
     #     os.path.join(temp_path, 'top7.csv'))
     # df = df.drop(columns='istop').to_csv(os.path.join(temp_path, 'info.csv'))
 
-    remove_path_with_files(data_path)
-    rename(temp_path, data_path)
+    if output_path == None:
+        remove_path_with_files(data_path)
+        rename(temp_path, data_path)
 
 
 if __name__ == '__main__':
