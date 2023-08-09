@@ -6,11 +6,6 @@ from scipy.io import wavfile
 from typing import Optional
 import wave
 
-main_path = os.path.join(os.getcwd().rsplit(
-    'baby-cry-classification')[0], 'baby-cry-classification')
-data_path = os.path.join(main_path, 'data')
-csv_path = os.path.join(main_path, 'origin_data_info.csv')
-
 
 def create_split_audio(file_path: str,
                        split_sec: int,
@@ -135,6 +130,11 @@ def split_audios(file_list: list[str],
 
 if __name__ == '__main__':
     import pandas as pd
+
+    main_path = os.path.join(os.getcwd().rsplit(
+        'baby-cry-classification')[0], 'baby-cry-classification')
+    data_path = os.path.join(main_path, 'data')
+    csv_path = os.path.join(main_path, 'origin_data_info.csv')
 
     df = pd.read_csv(data_path, 'top7.csv', index_col=0)
 

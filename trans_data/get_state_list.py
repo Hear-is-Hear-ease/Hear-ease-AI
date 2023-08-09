@@ -2,11 +2,6 @@ import os
 from typing import Optional, Union
 from utils.os import file_itorator
 
-main_path = os.path.join(os.getcwd().rsplit(
-    'baby-cry-classification')[0], 'baby-cry-classification')
-data_path = os.path.join(main_path, 'data')
-csv_path = os.path.join(main_path, 'origin_data_info.csv')
-
 
 def get_state_list_from_dir_name(data_path: str, with_path: bool = False, include_etc: bool = False) -> list[str]:
     """
@@ -69,3 +64,10 @@ def get_state_file_list(data_path: str,
         )])
 
     return file_list
+
+
+if __name__ == '__main__':
+    main_path = os.path.join(os.getcwd().rsplit(
+        'baby-cry-classification')[0], 'baby-cry-classification')
+    data_path = os.path.join(main_path, 'data')
+    csv_path = os.path.join(main_path, 'origin_data_info.csv')

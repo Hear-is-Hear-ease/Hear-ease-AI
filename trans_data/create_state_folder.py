@@ -3,13 +3,7 @@ from trans_data.bit_sampling import *
 from utils.sound import *
 from utils.os import *
 import os
-import numpy as np
 import pandas as pd
-
-main_path = os.path.join(os.getcwd().rsplit(
-    'baby-cry-classification')[0], 'baby-cry-classification')
-data_path = os.path.join(main_path, 'data')
-csv_path = os.path.join(main_path, 'origin_data_info.csv')
 
 
 def create_empty_state_folder(path: str, state_list=None) -> list[str]:
@@ -129,4 +123,9 @@ def create_state_folder(data_path: str, csv_path: str, output_path: Optional[str
 
 
 if __name__ == '__main__':
+    main_path = os.path.join(os.getcwd().rsplit(
+        'baby-cry-classification')[0], 'baby-cry-classification')
+    data_path = os.path.join(main_path, 'data')
+    csv_path = os.path.join(main_path, 'origin_data_info.csv')
+
     create_state_folder()

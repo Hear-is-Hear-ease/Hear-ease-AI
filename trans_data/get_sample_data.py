@@ -4,11 +4,6 @@ import os
 from typing import Optional
 from random import sample, seed, choices
 
-main_path = os.path.join(os.getcwd().rsplit(
-    'baby-cry-classification')[0], 'baby-cry-classification')
-data_path = os.path.join(main_path, 'data')
-csv_path = os.path.join(main_path, 'origin_data_info.csv')
-
 
 # 각각의 state에서 n개의 무작위 파일을 선택하여 경로를 반환한다.
 def get_state_samples(data_path: str,
@@ -200,5 +195,10 @@ def extract_data_sample(data_path: str,
 
 
 if __name__ == '__main__':
+    main_path = os.path.join(os.getcwd().rsplit(
+        'baby-cry-classification')[0], 'baby-cry-classification')
+    data_path = os.path.join(main_path, 'data')
+    csv_path = os.path.join(main_path, 'origin_data_info.csv')
+
     extract_data_sample(data_path, os.path.join(
         main_path, 'sample_data'), n_extract=100)

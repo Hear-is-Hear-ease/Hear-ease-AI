@@ -3,11 +3,6 @@ from utils.os import rename_by_keyword
 import os
 from typing import Optional
 
-main_path = os.path.join(os.getcwd().rsplit(
-    'baby-cry-classification')[0], 'baby-cry-classification')
-data_path = os.path.join(main_path, 'data')
-csv_path = os.path.join(main_path, 'origin_data_info.csv')
-
 
 def rename_files_by_state(data_path: str,
                           state_list: Optional[list[str]] = None,
@@ -50,8 +45,10 @@ def rename_files_by_state(data_path: str,
 
 
 if __name__ == '__main__':
-    from constant.os import *
+    main_path = os.path.join(os.getcwd().rsplit(
+        'baby-cry-classification')[0], 'baby-cry-classification')
+    data_path = os.path.join(main_path, 'data')
+    csv_path = os.path.join(main_path, 'origin_data_info.csv')
 
-    data_path = data_path
     renamed_file_list = rename_files_by_state(data_path)
     print(renamed_file_list)

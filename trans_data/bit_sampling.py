@@ -7,11 +7,6 @@ import sox
 import wave
 import numpy as np
 
-main_path = os.path.join(os.getcwd().rsplit(
-    'baby-cry-classification')[0], 'baby-cry-classification')
-data_path = os.path.join(main_path, 'data')
-csv_path = os.path.join(main_path, 'origin_data_info.csv')
-
 
 def get_sample_rate(file_path: str):
     """
@@ -112,6 +107,11 @@ if __name__ == '__main__':
     import sys
     sys.path.append(
         '/Users/jaewone/developer/tensorflow/baby-cry-classification')
+
+    main_path = os.path.join(os.getcwd().rsplit(
+        'baby-cry-classification')[0], 'baby-cry-classification')
+    data_path = os.path.join(main_path, 'data')
+    csv_path = os.path.join(main_path, 'origin_data_info.csv')
 
     file_list = []
     filee_folder = ''
