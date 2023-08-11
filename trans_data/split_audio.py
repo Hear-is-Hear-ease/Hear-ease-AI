@@ -3,7 +3,7 @@ import numpy as np
 import os
 import librosa
 from scipy.io import wavfile
-from typing import Optional
+from typing import Optional, Union
 import wave
 
 
@@ -53,7 +53,7 @@ def create_split_audio(file_path: str,
 
 
 def split_audio_list_in_sec(file_list: list[str],
-                            split_sec: int,
+                            split_sec: Union[int, float],
                             output_path: Optional[str] = None,
                             inplace: bool = False):
 
