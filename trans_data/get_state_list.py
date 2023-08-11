@@ -34,7 +34,7 @@ def get_state_file_list(data_path: str,
                         include: Optional[Union[str, list[str]]] = None,
                         exclude: Optional[Union[str, list[str]]] = None):
     """
-    각각의 state에서 n개의 무작위 파일을 선택하여 경로를 반환한다.
+    각각의 state에 존재하는 모든 파일들의 경로를 반환한다.
 
     Parameters:
 
