@@ -2,7 +2,8 @@ from trans_data.get_state_list import get_state_list_from_dir_name
 from utils.os import *
 import os
 from typing import Optional
-from random import sample, seed, choices
+from random import sample, seed, choices, shuffle
+from math import isclose
 
 
 # 각각의 state에서 n개의 무작위 파일을 선택하여 경로를 반환한다.
@@ -192,6 +193,44 @@ def extract_data_sample(data_path: str,
         copy_file(file, output_file)
 
     return output_file_list
+
+
+def split_dataset(data: list[any],
+                  train_ratio: float = 0.7,
+                  val_ratio: float = 0.2,
+                  test_ratio: float = 0.1,
+                  rand_seed=1234):
+    """
+    데이터셋을 train, validation, test로 분할한다. 만약 입력된 비율의 총합이 1이 아닐 경우 에러를 발생한다.
+
+    Parameters :
+    - data : 분할하고자 하는 데이터 리스트
+    - train_ratio : 분할하고자 하는 training 데이터셋 비율.
+    - val_ratio : 분할하고자 하는 validation 데이터셋 비율.
+    - test_ratio : 분할하고자 하는 test 데이터셋 비율.
+    - rand_seed=123 : 난수를 생성하는 시드값으로 동일한 시드값은 동일한 결과를 보장한다.
+
+    Returns : 분할된 train, validation, test data 데이터셋 리스트.
+    """
+
+    # Ensure the ratios sum to 1
+    assert isclose(train_ratio + val_ratio + test_ratio,
+                   1), "Ratios must sum to 1"
+
+    # Shuffle the data
+    seed(rand_seed)
+    shuffle(data)
+
+    # Get the split indices
+    train_end = int(len(data) * train_ratio)
+    val_end = train_end + int(len(data) * val_ratio)
+
+    # Split the data
+    train_data = data[:train_end]
+    val_data = data[train_end:val_end]
+    test_data = data[val_end:]
+
+    return train_data, val_data, test_data
 
 
 if __name__ == '__main__':
