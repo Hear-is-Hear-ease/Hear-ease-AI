@@ -4,6 +4,7 @@ from utils.sound import *
 from utils.os import *
 import os
 import pandas as pd
+from uuid import uuid4
 
 
 def create_empty_state_folder(path: str, state_list=None) -> list[str]:
@@ -43,7 +44,7 @@ def create_empty_state_folder(path: str, state_list=None) -> list[str]:
     return state_path_list
 
 
-def create_state_folder(data_path: str, csv_path: str, output_path: Optional[str] = None):
+def create_state_folder(data_path: str, csv_path: str, output_path: Optional[str] = None, etc=True):
     """
     원본 데이터와 정보가 담긴 csv 파일을 받아 state 이름의 폴더로 구분한다.
 
@@ -51,6 +52,7 @@ def create_state_folder(data_path: str, csv_path: str, output_path: Optional[str
         * data_path : 원본 데이터 경로
         * csv_path  : 데이터에 대한 정보가 담긴 csv 파일
         * output_path : output_path를 받을 경우 원본 데이터를 수정하는 것이 아닌 사본을 생성한다.
+        * etc: 상위 7개의 클래스가 아닌 경우 etc 폴더에 넣는다. False일 경우 etc 폴더를 생성하지 않는다.
 
     Returns: None
     """
@@ -62,7 +64,7 @@ def create_state_folder(data_path: str, csv_path: str, output_path: Optional[str
 
     # 작업할 폴더를 생성한다. 만약 _temp 라는 폴더가 존재한다면 에러가 발생된다.
     if os.path.exists(temp_path):
-        raise OSError('path _temp already exists.')
+        raise OSError(f'path {temp_path} already exists.')
     os.makedirs(temp_path)
 
     # Load csv
@@ -117,9 +119,66 @@ def create_state_folder(data_path: str, csv_path: str, output_path: Optional[str
     #     os.path.join(temp_path, 'top7.csv'))
     # df = df.drop(columns='istop').to_csv(os.path.join(temp_path, 'info.csv'))
 
+    if etc == False:
+        remove_path_with_files(os.path.join(temp_path, 'etc'))
+
     if output_path == None:
         remove_path_with_files(data_path)
         rename(temp_path, data_path)
+
+
+def extract_sample_from_csv(origin_data_path, csv_path,
+                            output_path, n_extract, use_state_list=None):
+    """
+    오리지널 데이터셋에서 csv를 통해 use_state_list에 명시된 상위 7개의 state에 대해 무작위로 n개씩 데이터를 추출한다.
+
+    만약 use_state_list가 없을 경우 상위 7개의 state를 사용한다.
+    """
+    if not os.path.exists(output_path):
+        os.mkdir(output_path)
+    if not os.path.exists(origin_data_path):
+        raise OSError(f'origin data path: {origin_data_path} not found')
+    if not os.path.exists(csv_path):
+        raise OSError(f'csv path: {csv_path} not found')
+
+    # Load csv
+    df = pd.read_csv(csv_path, index_col=0)
+
+    # 상위 7개의 state만 추출한다. 목표로 하는 state는 다음과 같다.
+    # ['sad', 'hungry', 'hug', 'awake', 'sleepy', 'uncomfortable', 'diaper']
+    if use_state_list == None:
+        top7_label = df.state.value_counts().keys().tolist()[:7]
+        use_state_list = top7_label
+
+    df = df[['file', 'state']][df.state.isin(use_state_list)]
+    extract_df = df.groupby('state').apply(lambda df: df.sample(
+        n=n_extract, random_state=42)).reset_index(drop=True)
+    # extract_df.apply(lambda df: copy_file_with_state_name(df, origin_data_path, output_path), axis=1)
+
+    # Sampling rate를 통일한다.
+    resampling(
+        file_path_list=[os.path.join(origin_data_path, file)
+                        for file in extract_df['file'].tolist()],
+        output_path=output_path,
+        target_sample_rate=16000
+    )
+
+    if not is_same_sample_rate([os.path.join(output_path, file) for file in os.listdir(output_path)], 16000):
+        # if not is_same_sample_rate([os.path.join(path, file) for path, file in file_itorator(temp_path, include='.wav')], 16000):
+        raise Exception('Resampling failed for an unknown reason.')
+
+    # 라벨에 따른 폴더 생성
+    for folder in use_state_list:
+        os.makedirs(os.path.join(output_path, folder))
+
+    # 각 라벨에 맞는 폴더로 이동
+    def move_file_by_label(ser, output_path):
+        file, state = ser
+        move_file(
+            os.path.join(output_path, file),
+            os.path.join(output_path, state, file))
+
+    extract_df.apply(lambda ser: move_file_by_label(ser, output_path), axis=1)
 
 
 if __name__ == '__main__':
@@ -129,3 +188,11 @@ if __name__ == '__main__':
     csv_path = os.path.join(main_path, 'origin_data_info.csv')
 
     create_state_folder()
+
+    # extract_sample_from_csv(
+    #     origin_data_path = data_path,
+    #     csv_path = csv_path,
+    #     output_path = aaa_output_path,
+    #     n_extract = 10,
+    #     use_state_list=['sad', 'hungry', 'hug', 'awake', 'sleepy', 'uncomfortable', 'diaper']
+    # )

@@ -6,6 +6,7 @@ from typing import Optional
 import sox
 import wave
 import numpy as np
+from tqdm import tqdm
 
 
 def get_sample_rate(file_path: str):
@@ -65,18 +66,18 @@ def resampling(file_path_list: list[str], output_path: Optional[str] = None, tar
     tfm = sox.Transformer()
     tfm.convert(samplerate=target_sample_rate)
 
-    for file_path in file_path_list:
-        if not os.path.exists(file_path):
-            raise OSError(f'File {file_path} not exist')
+    for i in tqdm(range(len(file_path_list))):
+        if not os.path.exists(file_path_list[i]):
+            raise OSError(f'File {file_path_list[i]} not exist')
 
-        file = file_path.rsplit('/', 1)[1]
+        file = file_path_list[i].rsplit('/', 1)[1]
         output_file_path = os.path.join(__output_path, file)
 
-        tfm.build(file_path, output_file_path)
+        tfm.build(file_path_list[i], output_file_path)
 
         if output_path == None:
-            remove_file(file_path)
-            move_file(output_file_path, file_path)
+            remove_file(file_path_list[i])
+            move_file(output_file_path, file_path_list[i])
 
     if output_path == None:
         remove_path_with_files(__output_path)

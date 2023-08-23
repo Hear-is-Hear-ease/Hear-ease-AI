@@ -21,12 +21,13 @@ def remove_files(path: str,
 
 def __remove_path_with_files(path: str):
     for item in os.listdir(path):
+        target = os.path.join(path, item)
         if os.path.isdir(item):
-            folder = os.path.join(path, item)
+            folder = target
             __remove_path_with_files()
             os.rmdir(folder)
         else:
-            os.remove(os.path.join(path, item))
+            os.remove(target)
 
 
 # remove path with contained files

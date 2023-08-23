@@ -63,8 +63,13 @@ def trim_audio(file_path: str, output_path: Optional[str] = None, inplace: bool 
 
     # Use a larger frame size to get a moving average of the audio energy
     frame_size = frame_size
-    start, end = detect_non_silence(energy, threshold, frame_size)
-    trimmed_wave_data = wave_data[start:end]
+    error_files = []
+    try:
+        start, end = detect_non_silence(energy, threshold, frame_size)
+        trimmed_wave_data = wave_data[start:end]
+    except:
+        trimmed_wave_data = wave_data
+        error_files.append(file_path)
     # print(start, end)
 
     # trim된 numpy array를 wav 파일로 저장한다.
@@ -74,6 +79,8 @@ def trim_audio(file_path: str, output_path: Optional[str] = None, inplace: bool 
     with wave.open(output_path, "w") as out_file:
         out_file.setparams(params)
         out_file.writeframes(trimmed_wave_data.tobytes())
+
+    return error_files
 
 
 if __name__ == '__main__':
