@@ -6,7 +6,7 @@
 
 - main.py
 
-  YamNet을 이용하여 입력된 Wav 파일이 어느 클래스의 음성인지 판단.
+  YamNet을 이용하여 입력된 Wav 파일이 어느 클래스의 음성인지 판단하는 예시를 제공.
 
 - YamNet . Models’ performance on classifying audio samples.png
 

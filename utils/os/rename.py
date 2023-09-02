@@ -45,33 +45,3 @@ def rename_by_keyword(file_list: list[str], keyword: str) -> list[str]:
         renamed_file_list.append(renamed_file)
         os.rename(random_file_list[i], renamed_file)
     return renamed_file_list
-
-
-if __name__ == '__main__':
-    from constant.os import *
-    from utils.os import rename_by_keyword, rename
-    import pandas as pd
-
-    df = pd.read_csv('sample_data.csv', index_col=0)
-
-    # df['new_file'] = ''
-    # for state in df.state.unique():
-    #     target = df['state'] == state
-    #     print(np.array([i + 1 for i in range(len(df[df.state == state]))]).astype(str))
-    #     df.loc[target,'new_file'] = df['state'] + np.array([i + 1 for i in range(len(df[df.state == state]))]).astype(str)
-
-    # df
-    df = df.assign(cumcount=(df.groupby('state').cumcount() + 1).astype(str))
-    df = df.assign(ex=df['file'].apply(lambda df: df.rsplit('.', 1)[1]))
-    df = df.assign(new_file=df.state + '_' + df.cumcount + '.' + df.ex)
-
-    # change file name
-    df[['file', 'new_file']].apply(lambda df: rename(
-        os.path.join(main_path, 'sample_data', df['file']),
-        os.path.join(main_path, 'sample_data', df['new_file'])
-    ), axis=1)
-
-    # drop new file column
-    df = df.drop(columns=['cumcount', 'ex', 'file'])
-    df = df.rename(columns={'new_file': 'file'})
-    df.tail(3)

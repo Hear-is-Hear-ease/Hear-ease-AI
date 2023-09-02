@@ -1,7 +1,16 @@
 import os
+import sys
 import numpy as np
 import pandas as pd
 
+
+main_path = os.path.join(os.getcwd().rsplit(
+    'baby-cry-classification')[0], 'baby-cry-classification')
+data_path = os.path.join(main_path, 'data')
+csv_path = os.path.join(main_path, 'origin_data_info.csv')
+
+
+sys.path.append(main_path)
 from utils.os import *
 from utils.sound import *
 
@@ -10,11 +19,6 @@ from donateacry_corpus import get_donateacry_corpus_data
 from giulbia import get_giulbia_data
 from iFLYTEK import get_iFLYTEK_data
 from wojiaoguodekai import get_wojiaoguodekai_data
-
-main_path = os.path.join(os.getcwd().rsplit(
-    'baby-cry-classification')[0], 'baby-cry-classification')
-data_path = os.path.join(main_path, 'data')
-csv_path = os.path.join(main_path, 'origin_data_info.csv')
 
 
 def get_total_data():
@@ -35,7 +39,7 @@ def get_total_data():
         "/Users/jaewone/Downloads/donateacry_corpus_cleaned_and_updated_data", data_path, csv_path)
     get_giulbia_data(
         "/Users/jaewone/Downloads/baby_cry_detection-master/data/903 - Baby laugh", data_path, csv_path)
-    get_iFLYTEK_data("/Users/jaewone/Downloads/dddd/train",
+    get_iFLYTEK_data("/Users/jaewone/Downloads/iflytek/train",
                      data_path, csv_path)
     get_wojiaoguodekai_data(
         "/Users/jaewone/Downloads/DatasetId_205704_1663556775", data_path, csv_path)
@@ -56,5 +60,5 @@ def get_total_data():
     print(df.tail(3))
 
 
-if __name__ == '__main__'():
+if __name__ == '__main__':
     get_total_data()

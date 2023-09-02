@@ -1,5 +1,4 @@
 import tensorflow as tf
-import numpy as np
 import librosa
 import io
 import csv
@@ -62,16 +61,22 @@ class YamNet:
 
     def is_baby_cry(self, waveform) -> bool:
         prediction = self.get_prediction(waveform, top_n=5)
-        return any([target in prediction for target in [
-            'Crying, sobbing', 'Baby cry, infant cry', 'Babbling']])
+        return any([target in prediction for target in ['Crying, sobbing', 'Baby cry, infant cry']])
 
 
 if __name__ == '__main__':
-    csv_path = '/Users/jaewone/Downloads/detect_baby_cry/yamnet_class_map.csv'
-    model_path = '/Users/jaewone/Downloads/detect_baby_cry/lite-model_yamnet_tflite_1.tflite'
+    import os
+    
+    cur_path = os.getcwd()
+    csv_path = os.path.join(cur_path, 'yamnet_class_map.csv')
+    model_path = os.path.join(cur_path, 'lite-model_yamnet_tflite_1.tflite')
 
+    # 모델을 인스턴스 생성
     yamNet = YamNet(model_path, csv_path)
 
+    # 음성을 불러온다.
     waveform = librosa.load(
         '/Users/jaewone/developer/tensorflow/baby-cry-classification/data/diaper/diaper_2.wav', sr=16000)[0]
+    
+    # 예측을 수행한 뒤 출력한다.
     print(yamNet(waveform))

@@ -92,16 +92,23 @@ def is_same_sample_rate(file_path_list: list[str], target_sample_rate: int):
         target_sample_rate: 확인하고자 하는 sample rate 값.
 
     Returns:
-        모든 파일의 sample rate가 target_sample_rate와 일치할 경우 True를
-        그렇지 않을 경우 False를 반환한다.
+        모든 파일의 sample rate가 target_sample_rate와 일치할 경우 True를 반환한다.
+        만약 wav 파일이 손상되어 resampling을 수행할 수 없을 경우 손상된 파일 리스트를 반환한다.
     """
 
-    sample_rate_set = list(set([get_sample_rate(file_path)
-                                for file_path in file_path_list]))
+    sample_rate_list = [get_sample_rate(file_path)for file_path in file_path_list]
+    sample_rate_set = list(set(sample_rate_list))
 
     if len(sample_rate_set) == 1 and sample_rate_set[0] == target_sample_rate:
         return True
-    return False
+    
+    nan_file_list = []
+    for i in range(len(sample_rate_list)):
+        if sample_rate_list[i] != target_sample_rate:
+            # print(f'File {file_path_list[i]} has sample rate with {sample_rate_list[i]}')
+            nan_file_list.append(file_path_list[i])
+            
+    return nan_file_list
 
 
 if __name__ == '__main__':
@@ -124,5 +131,5 @@ if __name__ == '__main__':
         target_sample_rate=16000
     )
 
-    if is_same_sample_rate([os.path.join(filee_folder, file) for file in file_list], 16000):
+    if is_same_sample_rate([os.path.join(filee_folder, file) for file in file_list], 16000) == True:
         print(f'존재하는 sample rate는 16000 뿐이다.')

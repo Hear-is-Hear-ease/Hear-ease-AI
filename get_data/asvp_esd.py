@@ -74,8 +74,8 @@ https://github.com/HLTSingapore/Emotional-Speech-Data
 """
 
 # Load packages
-from utils.os import *
 import os
+import sys
 import numpy as np
 import pandas as pd
 
@@ -86,6 +86,10 @@ main_path = os.path.join(os.getcwd().rsplit(
     'baby-cry-classification')[0], 'baby-cry-classification')
 data_path = os.path.join(main_path, 'data')
 csv_path = os.path.join(main_path, 'origin_data_info.csv')
+
+
+sys.path.append(main_path)
+from utils.os import *
 
 
 def get_feel(feel_code):

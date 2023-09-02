@@ -8,15 +8,23 @@
 
 <br>
 
+### Overview
+
+- 데이터 전처리 프로세스는 trans_data/trans_data.ipynb 를 통해 진행됨.
+
+- 아기울음 소리 감지를 위해 YamNet이 사용되었으며 detect_baby_cry/main.py 를 통해 YamNet의 사용 예시를 확인 할 수 있다.
+
+- 아기울음 소리 분류를 위해 사용된 모델은 ResNet50이며 model/resnet/resnet.ipynb 를 통해 진행됨.
+
+<br>
+
 ### 파일 구성
 
 #### 데이터셋 구성
 
 - origin_data : 본 프로젝트에 사용된 오리지널 데이터셋
 
-- data : 프로젝트 중반까지 사용되었던 데이터셋으로 trans_data/trans_data.ipynb 방법을 통해 전처리된 데이터셋.
-
-- renew_data : 음성의 파워를 측정하여 패턴을 추출하는 것에 초점둔 trans_data/new_trans_data.ipynb 방법을 통해 전처리된 데이터셋.
+- data : 음성의 파워를 측정하여 패턴을 추출하는 것에 초점을 두어 전처리된 데이터셋.
 
 - origin_data_info.csv : origin_data에서 각 파일에 대한 state, age와 같은 부과 정보를 포함하는 csv
 

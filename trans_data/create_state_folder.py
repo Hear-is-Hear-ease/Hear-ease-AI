@@ -92,9 +92,9 @@ def create_state_folder(data_path: str, csv_path: str, output_path: Optional[str
         target_sample_rate=16000
     )
 
-    if not is_same_sample_rate([os.path.join(temp_path, file) for file in os.listdir(temp_path)], 16000):
-        # if not is_same_sample_rate([os.path.join(path, file) for path, file in file_itorator(temp_path, include='.wav')], 16000):
-        raise Exception('Resampling failed for an unknown reason.')
+    # resampling을 수행하며 손상된 wav 파일로 인하여 resampling을 수행할 수 없는 파일 리스트를 가져온다.
+    error_list = is_same_sample_rate([os.path.join(temp_path, file) for file in os.listdir(temp_path)], 16000)
+    error_list = [file_path.rsplit('/', 1)[1] for file_path in error_list]
 
     # 라벨에 따른 폴더 생성
     for folder in top7_label:
@@ -102,22 +102,15 @@ def create_state_folder(data_path: str, csv_path: str, output_path: Optional[str
     os.makedirs(os.path.join(temp_path, 'etc'))
 
     # 각 라벨에 맞는 폴더로 이동
-    def move_file_by_label(ser):
-        file, state = ser
-        move_file(
-            os.path.join(temp_path, file),
-            os.path.join(temp_path, state, file))
+    def move_file_by_label(ser, error_list):
+        if file not in error_list:
+            file, state = ser
+            move_file(
+                os.path.join(temp_path, file),
+                os.path.join(temp_path, state, file))
 
     df = df.assign(istop=df.state.where(df.state.isin(top7_label), 'etc'))
-    df[['file', 'istop']].apply(lambda ser: move_file_by_label(ser), axis=1)
-
-    # 에러가 난 파일을 제외한 다음 원본 csv를 수정한다.
-    # 또한 상위 7개의 state만을 가지는 csv 파일인 top7.csv와 나머지 state들을 가지는 etc.csv 파일을 생성한다.
-    # df[df['istop'] == 'etc'][['state', 'file']].to_csv(
-    #     os.path.join(temp_path, 'etc.csv'))
-    # df[df['istop'] != 'etc'][['state', 'file']].to_csv(
-    #     os.path.join(temp_path, 'top7.csv'))
-    # df = df.drop(columns='istop').to_csv(os.path.join(temp_path, 'info.csv'))
+    df[['file', 'istop']].apply(lambda ser: move_file_by_label(ser, error_list), axis=1)
 
     if etc == False:
         remove_path_with_files(os.path.join(temp_path, 'etc'))
@@ -128,7 +121,7 @@ def create_state_folder(data_path: str, csv_path: str, output_path: Optional[str
 
 
 def extract_sample_from_csv(origin_data_path, csv_path,
-                            output_path, n_extract, use_state_list=None):
+                            output_path, n_extract, use_state_list=None, over_time=2, seed=1234):
     """
     오리지널 데이터셋에서 csv를 통해 use_state_list에 명시된 상위 7개의 state에 대해 무작위로 n개씩 데이터를 추출한다.
 
@@ -149,10 +142,22 @@ def extract_sample_from_csv(origin_data_path, csv_path,
     if use_state_list == None:
         top7_label = df.state.value_counts().keys().tolist()[:7]
         use_state_list = top7_label
-
     df = df[['file', 'state']][df.state.isin(use_state_list)]
+
+    # 음성의 길이가 over_time보다 큰 값만을 가져온다.
+    df['duration'] = df['file'].apply(
+        lambda file: get_duration(os.path.join(origin_data_path, file)))
+    df = df[df['duration'] > over_time]
+
+    # wav 파일이 손상되어 sample rate가 nan인 파일은 제외한다.
+    df['sr'] = df['file'].apply(lambda file: get_sample_rate(os.path.join(origin_data_path, file)))
+    df = df[df['sr'].isin([np.nan, 1600.0]) == False]
+
+    # 처리된 두 열은 사용하지 않음으로 제거한다.
+    df = df.drop(columns=['duration', 'sr'])
+    
     extract_df = df.groupby('state').apply(lambda df: df.sample(
-        n=n_extract, random_state=42)).reset_index(drop=True)
+        n=n_extract, random_state=seed)).reset_index(drop=True)
     # extract_df.apply(lambda df: copy_file_with_state_name(df, origin_data_path, output_path), axis=1)
 
     # Sampling rate를 통일한다.
@@ -164,7 +169,6 @@ def extract_sample_from_csv(origin_data_path, csv_path,
     )
 
     if not is_same_sample_rate([os.path.join(output_path, file) for file in os.listdir(output_path)], 16000):
-        # if not is_same_sample_rate([os.path.join(path, file) for path, file in file_itorator(temp_path, include='.wav')], 16000):
         raise Exception('Resampling failed for an unknown reason.')
 
     # 라벨에 따른 폴더 생성

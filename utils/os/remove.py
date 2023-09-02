@@ -1,6 +1,5 @@
 import os
 from typing import Union, Optional
-from shutil import rmtree
 
 from utils.os.itorate import file_itorator
 

@@ -10,18 +10,21 @@ https://aistudio.baidu.com/aistudio/datasetdetail/41960
 
 # Load packages
 import os
-import numpy as np
+import sys
 import pandas as pd
 
-from utils.os import *
 
-origin_file_path = "/Users/jaewone/Downloads/dddd/train"
+origin_file_path = "/Users/jaewone/Downloads/iflytek/train"
 label_list = ['hug', 'diaper', 'hungry', 'sleepy', 'awake', 'uncomfortable']
 
 main_path = os.path.join(os.getcwd().rsplit(
     'baby-cry-classification')[0], 'baby-cry-classification')
 data_path = os.path.join(main_path, 'data')
 csv_path = os.path.join(main_path, 'origin_data_info.csv')
+
+
+sys.path.append(main_path)
+from utils.os import *
 
 
 def get_df_from_data(origin_file_path: str):

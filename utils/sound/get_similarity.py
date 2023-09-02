@@ -3,7 +3,6 @@ from typing import Optional
 from tqdm import tqdm
 import librosa
 import numpy as np
-import os
 
 
 def compute_melspectrogram(file_path: str) -> np.ndarray:
@@ -59,23 +58,3 @@ def get_similarities(file_list: list[str], top_n: Optional[int] = None) -> list[
     indices = np.flip(np.argsort(np.sum(similarity_matrix, axis=1)))
 
     return [file_list[i] for i in (indices if top_n == None else indices[:top_n])]
-
-
-if __name__ == '__main__':
-    import sys
-    sys.path.append(
-        '/Users/jaewone/developer/tensorflow/baby-cry-classification')
-
-    from constant.os import *
-    from utils.os import remove_path_with_files
-    from trans_data.get_sample_data import *
-
-    test_sample_path = os.path.join(main_path, 'test_sample')
-
-    extract_data_sample(os.path.join(data_path, 'hungry'),
-                        test_sample_path, n_extract=10)
-
-    file_list = get_similarities(
-        [os.path.join(test_sample_path, file) for file in os.listdir(test_sample_path)])
-
-    remove_path_with_files(test_sample_path)

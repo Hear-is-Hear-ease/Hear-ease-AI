@@ -41,19 +41,21 @@
 """
 
 # Load packages
-from utils.os import *
 import os
-import numpy as np
+import sys
 import pandas as pd
+
 
 main_path = os.path.join(os.getcwd().rsplit(
     'baby-cry-classification')[0], 'baby-cry-classification')
 data_path = os.path.join(main_path, 'data')
 csv_path = os.path.join(main_path, 'origin_data_info.csv')
 
-
 origin_file_path = "/Users/jaewone/Downloads/donateacry_corpus_cleaned_and_updated_data"
 label_list = ['belly_pain', 'discomfort', 'burping', 'tired', 'hungry']
+
+sys.path.append(main_path)
+from utils.os import *
 
 
 def get_data_df(label: str, df_columns: list[str]) -> pd.DataFrame:
