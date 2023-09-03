@@ -42,13 +42,3 @@ def rename_files_by_state(data_path: str,
         renamed_file_list += rename_by_keyword(file_path_list, state)
 
     return renamed_file_list
-
-
-if __name__ == '__main__':
-    main_path = os.path.join(os.getcwd().rsplit(
-        'baby-cry-classification')[0], 'baby-cry-classification')
-    data_path = os.path.join(main_path, 'data')
-    csv_path = os.path.join(main_path, 'origin_data_info.csv')
-
-    renamed_file_list = rename_files_by_state(data_path)
-    print(renamed_file_list)

@@ -126,23 +126,3 @@ def split_audios(file_list: list[str],
         output_file_path = file_path if inplace else os.path.join(
             output_file_path, file_path.rsplit('/', 1)[1])
         wavfile.write(output_file_path, sr, segmented_audio)
-
-
-if __name__ == '__main__':
-    import pandas as pd
-
-    main_path = os.path.join(os.getcwd().rsplit(
-        'baby-cry-classification')[0], 'baby-cry-classification')
-    data_path = os.path.join(main_path, 'data')
-    csv_path = os.path.join(main_path, 'origin_data_info.csv')
-
-    df = pd.read_csv(data_path, 'top7.csv', index_col=0)
-
-    split_audios(
-        file_list=[os.path.join(data_path, file)
-                   for file in df['file'].tolist()],
-        from_path=data_path,
-        output_path=os.path.join(main_path, 'trin_audio_data'),
-        start_time=2,
-        end_time=7
-    )

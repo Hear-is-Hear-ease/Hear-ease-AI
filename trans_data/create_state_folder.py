@@ -4,7 +4,6 @@ from utils.sound import *
 from utils.os import *
 import os
 import pandas as pd
-from uuid import uuid4
 
 
 def create_empty_state_folder(path: str, state_list=None) -> list[str]:
@@ -184,19 +183,3 @@ def extract_sample_from_csv(origin_data_path, csv_path,
 
     extract_df.apply(lambda ser: move_file_by_label(ser, output_path), axis=1)
 
-
-if __name__ == '__main__':
-    main_path = os.path.join(os.getcwd().rsplit(
-        'baby-cry-classification')[0], 'baby-cry-classification')
-    data_path = os.path.join(main_path, 'data')
-    csv_path = os.path.join(main_path, 'origin_data_info.csv')
-
-    create_state_folder()
-
-    # extract_sample_from_csv(
-    #     origin_data_path = data_path,
-    #     csv_path = csv_path,
-    #     output_path = aaa_output_path,
-    #     n_extract = 10,
-    #     use_state_list=['sad', 'hungry', 'hug', 'awake', 'sleepy', 'uncomfortable', 'diaper']
-    # )

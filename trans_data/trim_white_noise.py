@@ -6,12 +6,12 @@ from utils.os import *
 from utils.sound import *
 
 
-def detect_non_silence(audio_data: np.array, threshold: float, frame_size: int) -> list[int]:
+def detect_non_silence(audio_data: np.ndarray, threshold: float, frame_size: int) -> list[int]:
     """
     오디오 신호에서 무음이 아닌 섹션의 시작과 끝을 감지한다.
 
     Parameters:
-        - audio_data (numpy.array): 묵음을 감지해야 하는 오디오 데이터.
+        - audio_data (numpy.ndarray): 묵음을 감지해야 하는 오디오 데이터.
         - threshold (float): 오디오가 무음으로 간주되는 에너지 임계값.
         - frame_size (int): 오디오 에너지의 이동 평균을 계산하기 위해 고려할 샘플 수.
 
@@ -81,26 +81,3 @@ def trim_audio(file_path: str, output_path: Optional[str] = None, inplace: bool 
         out_file.writeframes(trimmed_wave_data.tobytes())
 
     return error_files
-
-
-if __name__ == '__main__':
-    import os
-    from tqdm import tqdm
-    from trans_data.get_sample_data import extract_data_sample, extract_state_sample
-    from trans_data.create_state_folder import create_empty_state_folder
-
-    test_data_path = os.path.join(main_path, 'test_data')
-    trim_data_path = os.path.join(main_path, 'trim_data')
-
-    file_list = extract_state_sample(data_path, test_data_path, 10)
-
-    if not os.path.exists(trim_data_path):
-        create_empty_state_folder(trim_data_path)
-
-    for i in tqdm(range(len(file_list))):
-        trim_audio(file_list[i], os.path.join(
-            trim_data_path, file_list[i].rsplit('/', 1)[1]))
-
-    from utils.os import file_itorator
-    file_list = [os.path.join(path, file) for path, file in file_itorator(
-        os.path.join(main_path, 'trim_data'))]

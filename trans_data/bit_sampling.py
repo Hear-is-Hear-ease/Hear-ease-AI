@@ -54,8 +54,7 @@ def resampling(file_path_list: list[str], output_path: Optional[str] = None, tar
 
     __output_path = output_path
     if __output_path == None:
-        __output_path = os.path.join(
-            main_path, 'baby-cry-classification-resampling-temp-folder')
+        __output_path = os.path.join(os.getcwd(), 'baby-cry-classification-resampling-temp-folder')
         if os.path.exists(__output_path):
             remove_path_with_files(__output_path)
         os.mkdir(__output_path)
@@ -105,31 +104,6 @@ def is_same_sample_rate(file_path_list: list[str], target_sample_rate: int):
     nan_file_list = []
     for i in range(len(sample_rate_list)):
         if sample_rate_list[i] != target_sample_rate:
-            # print(f'File {file_path_list[i]} has sample rate with {sample_rate_list[i]}')
             nan_file_list.append(file_path_list[i])
             
     return nan_file_list
-
-
-if __name__ == '__main__':
-    import sys
-    sys.path.append(
-        '/Users/jaewone/developer/tensorflow/baby-cry-classification')
-
-    main_path = os.path.join(os.getcwd().rsplit(
-        'baby-cry-classification')[0], 'baby-cry-classification')
-    data_path = os.path.join(main_path, 'data')
-    csv_path = os.path.join(main_path, 'origin_data_info.csv')
-
-    file_list = []
-    filee_folder = ''
-
-    resampling(
-        file_path_list=[os.path.join(filee_folder, file)
-                        for file in file_list],
-        # output_path = os.path.join(main_path, 'test2'),
-        target_sample_rate=16000
-    )
-
-    if is_same_sample_rate([os.path.join(filee_folder, file) for file in file_list], 16000) == True:
-        print(f'존재하는 sample rate는 16000 뿐이다.')
