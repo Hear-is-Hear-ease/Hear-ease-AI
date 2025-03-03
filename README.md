@@ -1,5 +1,7 @@
 ## 청각장애인 부모를 위한 아기 울음소리 감지 및 범주 분류
 
+[Hear-is, Hear-ease](https://github.com/Hear-is-Hear-ease/.github)의 AI 레포지토리.
+
 ### 아기 울음소리 감지 및 범주 분류 모델
 
 - 소속: 서울과학기술대학교 데이터청년 캠퍼스 01조
@@ -10,11 +12,11 @@
 
 ### Overview
 
-- 데이터 전처리 프로세스는 trans_data/trans_data.ipynb 를 통해 진행됨.
+- 데이터 전처리 프로세스는 [trans_data/trans_data.ipynb](https://github.com/Hear-is-Hear-ease/Hear-ease-AI/blob/main/trans_data/trans_data.ipynb) 를 통해 진행됨.
 
-- 아기울음 소리 감지를 위해 YamNet이 사용되었으며 detect_baby_cry/main.py 를 통해 YamNet의 사용 예시를 확인 할 수 있다.
+- 아기울음 소리 감지를 위해 YamNet이 사용되었으며 [detect_baby_cry/main.py](https://github.com/Hear-is-Hear-ease/Hear-ease-AI/blob/main/detect_baby_cry/main.py) 를 통해 YamNet의 사용 예시를 확인 할 수 있다.
 
-- 아기울음 소리 분류를 위해 사용된 모델은 ResNet50이며 model/resnet/resnet.ipynb 를 통해 진행됨.
+- 아기울음 소리 분류를 위해 사용된 모델은 ResNet50이며 [model/resnet/resnet.ipynb](https://github.com/Hear-is-Hear-ease/Hear-ease-AI/blob/main/model/reset/resnet.ipynb) 를 통해 진행됨.
 
 <br>
 
